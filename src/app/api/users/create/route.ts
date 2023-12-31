@@ -4,6 +4,7 @@ import { UserRole } from '@prisma/client';
 import { NextApiRequest } from 'next';
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs'
 
 const secret = process.env.NEXTAUTH_SECRET;
 
@@ -25,12 +26,12 @@ async function handler(req: NextRequest) {
         const resp = new NextResponse("Email and password are required", { status: 401 })
         return resp
     }
-    
+
     //   Create new client user
     const user = await prisma.user.create({
         data: {
             email: body.email,
-            password: body.password,
+            password: bcrypt.hashSync(body.password, 10),
             role: UserRole.CLIENT
         }
     });

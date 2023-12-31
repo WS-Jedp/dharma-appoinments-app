@@ -9,10 +9,12 @@ import "react-calendar/dist/Calendar.css";
 import "./styles.css";
 import { Header } from "@/components/auth/header";
 import { useSession } from "next-auth/react";
+import NotificationsServices from "@/services/notifications";
 
 const appointmentsServices = new AppointmentsServices();
 
 const CalendarPage = () => {
+  const [loading, setLoading] = useState<boolean>(false)
   const [currentEmail, setCurrentEmail] = useState<string>("");
   const [isExternalUser, setIsExternalUser] = useState(true);
   const { data: session, status } = useSession();
@@ -45,6 +47,15 @@ const CalendarPage = () => {
       getAppointments(email);
     }
   }, [currentEmail]);
+
+  async function handleNotifyAdmins() {
+    if(!currentEmail) return
+
+    setLoading(true)
+    const notificationSent = await NotificationsServices.NotifyAdmins(currentEmail)
+    setLoading(false)
+
+  }
 
   // Array of available hours from 8:00 AM to 8:00 PM every 30 minutes
   const availableHours = [
@@ -178,11 +189,15 @@ const CalendarPage = () => {
             </span>
           </p>
 
-          {!isExternalUser && (
-            <button className="bg-emerald-600 py-2 px-6 text-white rounded-lg shadow-lg w-[120px]">
+          {!isExternalUser ? !loading ? (
+            <button className="bg-emerald-600 py-2 px-6 text-white rounded-lg shadow-lg w-[120px]" onClick={handleNotifyAdmins}>
               Notify
             </button>
-          )}
+          ) : (
+            <span>
+              Loading...
+            </span>
+          ) : (<></>)}
         </div>
 
         <div className="mx-6 w-2/5 h-full overflow-y-auto">
