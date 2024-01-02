@@ -62,12 +62,10 @@ const authOptions: NextAuthOptions = {
         return token
     },
     session({ session, token }) {
-        if(!session.user) {
-            session.user = {}
-        }
-        session.user.id = token.id
-        session.user.role = token.role
-        return session
+      session.user = session.user || {};
+      session.user.id = token.id as number;
+      session.user.role = token.role as UserRole;
+      return session;
     },
   },
   debug: true,

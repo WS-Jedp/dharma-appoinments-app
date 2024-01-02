@@ -1,11 +1,10 @@
 import prisma from "@/server/prisma";
-import { NextApiRequest, NextApiResponse } from "next";
 import { getToken } from "next-auth/jwt";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const secret = process.env.NEXTAUTH_SECRET;
 
-async function handler(req: NextApiRequest, { params }: { params: { email: string } }) {
+async function handler(req: NextRequest, { params }: { params: { email: string } }) {
   try {
 
     const token = await getToken({ req, secret });
