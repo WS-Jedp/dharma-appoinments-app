@@ -16,16 +16,6 @@ async function main() {
   });
 
   console.log(`User created with id: ${adminUser.id}`);
-
-  const clientUser = await prisma.user.create({
-    data: {
-      email: 'dharma@gmail.com', // Replace with your desired email
-      password: hashedPassword,
-      role: UserRole.CLIENT,
-    },
-  });
-
-  console.log(`User created with id: ${clientUser.id}`);
 }
 
 main()
